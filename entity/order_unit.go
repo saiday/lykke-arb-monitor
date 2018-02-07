@@ -2,8 +2,8 @@ package entity
 
 // OrderPair contains buy and sell order units
 type OrderPair struct {
-	Sell OrderUnit
-	Buy  OrderUnit
+	Sells []OrderUnit
+	Buys  []OrderUnit
 }
 
 // OrderUnit contains Volume and Price pair
@@ -27,6 +27,6 @@ func NewOrderPair() *OrderPair {
 }
 
 // NewOrderUnit returns default OrderUnit struct
-func NewOrderUnit() *OrderUnit {
-	return &OrderUnit{0, 0}
+func NewOrderUnit() *[]OrderUnit {
+	return &[]OrderUnit{}
 }
