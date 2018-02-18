@@ -27,6 +27,7 @@ func fetchOrderEvery(d time.Duration, f func(string) *entity.OrderPair) {
 // pair2 represetns target2 glove order
 // pair12 represents  target2 / target1 order
 func arbChances(pair1 *entity.OrderPair, pair12 *entity.OrderPair, pair2 *entity.OrderPair) {
+	arbPair1Detail(pair1, pair12, pair2)
 	arbPair1(pair1, pair12, pair2)
 	arbPair2(pair1, pair12, pair2)
 }
@@ -64,9 +65,42 @@ func monitorOrderBooks(pairID string) *entity.OrderPair {
 		buyOrder := orderBooksResponse.BuyUnit().Prices
 		sellOrder := orderBooksResponse.SellUnit().Prices
 
-		pair := &entity.OrderPair{sellOrder, buyOrder}
+		pair := &entity.OrderPair{Sells: sellOrder, Buys: buyOrder}
 		return pair
 	}
 
 	return entity.NewOrderPair()
+}
+
+func arbPair1Detail(pair1 *entity.OrderPair, pair12 *entity.OrderPair, pair2 *entity.OrderPair) float64 {
+	// pair1 as currency base unit
+	pair1Sells := make([]entity.OrderUnit, len(pair1.Sells))
+	copy(pair1Sells, pair1.Sells)
+
+	pair2Buys := make([]entity.OrderUnit, len(pair2.Buys))
+	copy(pair2Buys, pair2.Buys)
+
+	pair12Buys := make([]entity.OrderUnit, len(pair12.Buys))
+	copy(pair12Buys, pair12.Buys)
+
+	fmt.Printf("\n\n\n\n origin")
+	fmt.Printf("%v, len is: %d\n", pair1Sells[0], len(pair1Sells))
+
+	findArbMaximum(&pair1Sells, &pair2Buys, &pair12Buys)
+
+	fmt.Printf("\n\n\n\n final")
+	fmt.Printf("%v, len is: %d\n", pair1Sells[0], len(pair1Sells))
+
+	return 0.0
+}
+
+func findArbMaximum(sells *[]entity.OrderUnit, buys *[]entity.OrderUnit, arbMarket *[]entity.OrderUnit) {
+
+	*sells = append((*sells)[:0], (*sells)[1:]...)
+
+	// sells[0] = sells[len(sells)-1]
+	// sells = sells[:len(sells)-1]
+
+	fmt.Printf("\n\n\n\n remove")
+	fmt.Printf("%v, len is: %d\n", (*sells)[0], len(*sells))
 }
