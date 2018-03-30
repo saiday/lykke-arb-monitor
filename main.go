@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/everdev/mack"
 	"github.com/saiday/lykke-arb-monitor/entity"
 )
 
@@ -41,6 +42,9 @@ func arbChances(pair1 *entity.OrderPair, pair12 *entity.OrderPair, pair2 *entity
 func arbPair1(pair1 *entity.OrderPair, pair12 *entity.OrderPair, pair2 *entity.OrderPair, entity string) {
 	sellPair1ToPair2Rate := pair2.Sells[0].Price / pair1.Buys[0].Price
 	if sellPair1ToPair2Rate < pair12.Buys[0].Price {
+		message := fmt.Sprintf("LKK to %s tourment", entity)
+		mack.Notify(message)
+		mack.Say(message)
 		fmt.Printf("!!!!!!!!!!!!!!!!!!!!! chance to arb: sold LKK to usd, buy %s, sold to LKK: %f >>>> %f\n", entity, sellPair1ToPair2Rate, pair12.Buys[0].Price)
 	} else {
 		fmt.Printf("no chance to arb LKK: %f > %f\n", sellPair1ToPair2Rate, pair12.Buys[0].Price)
@@ -50,6 +54,9 @@ func arbPair1(pair1 *entity.OrderPair, pair12 *entity.OrderPair, pair2 *entity.O
 func arbPair2(pair1 *entity.OrderPair, pair12 *entity.OrderPair, pair2 *entity.OrderPair, entity string) {
 	sellPair2ToPair1Rate := pair2.Buys[0].Price / pair1.Sells[0].Price
 	if sellPair2ToPair1Rate > pair12.Sells[0].Price {
+		message := fmt.Sprintf("%s to LKK tourment", entity)
+		mack.Notify(message)
+		mack.Say(message)
 		fmt.Printf("!!!!!!!!!!!!!!!!!!!!! chance to arb: sold %s to usd, buy LKK, sold to %s : %f >>>> %f\n", entity, entity, sellPair2ToPair1Rate, pair12.Sells[0].Price)
 	} else {
 		fmt.Printf("no chance to arb %s: %f < %f\n", entity, sellPair2ToPair1Rate, pair12.Sells[0].Price)
